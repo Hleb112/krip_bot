@@ -7,7 +7,7 @@ import (
 	_ "krip_bot/repository"
 	"krip_bot/search"
 	_ "krip_bot/search"
-	encoder "krip_bot/url_encode"
+	encoder "krip_bot/url-encode"
 	"os"
 	"reflect"
 	"time"

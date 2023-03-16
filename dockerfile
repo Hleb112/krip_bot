@@ -1,8 +1,8 @@
-FROM golang:latest
+FROM golang as compiler
+RUN  go get -a -ldflags '-s' \
+github.com/Hleb112/krip_bot
+FROM scratch
 ENV LANGUAGE="en"
 ENV TZ=Europe/Moscow
-RUN mkdir /app
-ADD . /app/
-WORKDIR /app
-RUN go build -o main .
-CMD ["/app/main"]
+COPY --from=compiler /go/bin/krip_bot .
+CMD ["/krip_bot"]
