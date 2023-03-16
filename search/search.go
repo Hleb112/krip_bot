@@ -3,7 +3,6 @@ package search
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -14,7 +13,9 @@ type SearchResults struct {
 }
 
 type Result struct {
-	Name, Description, URL string
+	Name        string
+	Description string
+	URL         string
 }
 
 func (sr *SearchResults) UnmarshalJSON(bs []byte) error {
@@ -34,34 +35,28 @@ func (sr *SearchResults) UnmarshalJSON(bs []byte) error {
 }
 
 func WikipediaAPI(request string) (answer []string) {
-
-	//Создаем срез на 3 элемента
 	s := make([]string, 3)
 
-	//Отправляем запрос
 	if response, err := http.Get(request); err != nil {
 		s[0] = "Wikipedia не отвечает"
 	} else {
 		defer response.Body.Close()
 
-		//Считываем ответ
 		contents, err := ioutil.ReadAll(response.Body)
 		if err != nil {
-			log.Fatal(err)
+			s[0] = "нет контента"
 		}
 
-		//Отправляем данные в структуру
 		sr := &SearchResults{}
+
 		if err = json.Unmarshal([]byte(contents), sr); err != nil {
 			s[0] = "Что-то пошло не так, измените запрос"
 		}
 
-		//Проверяем не пустая ли наша структура
 		if !sr.ready {
 			s[0] = "Что-то пошло не так, измените запрос"
 		}
 
-		//Проходим через нашу структуру и отправляем данные в срез с ответом
 		for i := range sr.Results {
 			s[i] = sr.Results[i].URL
 		}
